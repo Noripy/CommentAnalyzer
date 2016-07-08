@@ -1,1 +1,15 @@
-amitatatatata should do "git pull"!!
+参考サイト
+
+チューターさんが教えてくれたサイト
+
+・http://noric0124.hatenablog.jp/entry/2013/11/19/Java%E3%81%A7%E3%81%AEHTTP%E9%80%9A%E4%BF%A1%E3%81%AE%E7%B0%A1%E5%8D%98%E3%81%AA%E3%82%B5%E3%83%B3%E3%83%97%E3%83%AB%EF%BC%88HttpURLConnection%E3%82%92%E4%BD%BF%E7%94%A8%E3%81%97%E3%81%A6%EF%BC%89#f1
+
+ニコニコ解析
+・https://osdn.jp/projects/nicolib/wiki/%E3%83%8B%E3%82%B3%E3%83%8B%E3%82%B3%E8%A7%A3%E6%9E%90%E3%83%A1%E3%83%A2
+
+・http://pronama.azurewebsites.net/2015/06/14/niconico-login/
+
+おそらく今一番求めているコード.user_sessionを取得しないとできない
+・https://gist.github.com/sikosikomen/5604868
+
+ログインしている状況でCookieを取得しないといけない
