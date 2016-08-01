@@ -13,3 +13,8 @@
 ・https://gist.github.com/sikosikomen/5604868
 
 ログインしている状況でCookieを取得しないといけない
+
+開発したコードは以下二つのサイトから参考に開発した :
+
+・https://gist.github.com/sikosikomen/5604868
+・https://www.ht.sfc.keio.ac.jp/~takuro/blog/files/bdc9643a4f06edb02bbc1dd306f52b00-20.html
