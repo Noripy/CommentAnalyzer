@@ -92,7 +92,7 @@ public enum NicoLiveManager {
 	}
 	
 	public static void main(String[] args) {
-//		//繝九さ繝九さ蜍慕判縺ｫ繝ｭ繧ｰ繧､繝ｳ縺励◆迥ｶ諷九〒Cookie縺九ｉuser_session繧偵→縺｣縺ｦ縺上ｋ
+		//ニコニコ動画にログインした状態でCookieからuser_sessionをとってくる
 		
 		String mail = JOptionPane.showInputDialog("mail");
 		String pass = JOptionPane.showInputDialog("password");
@@ -100,18 +100,25 @@ public enum NicoLiveManager {
 		
 		String userSession = login(mail, pass);
 		
-		// 謖�螳壹＠縺溘け繝�繧ｭ繝ｼ縺九ｉ繝槭う繝壹�ｼ繧ｸ縺ｮ諠�蝣ｱ繧貞叙蠕�
+		// 指定したクッキーからマイページの情報を取得
 		if (NicoLiveManager.I.connectMyPageAndGetUserInfo(userSession))
 			NicoLiveManager.I.printMyPageInfo();
-		// 竭�繧ｳ繝｡繝ｳ繝亥叙蠕玲ｺ門ｙ
+		// 1.コメント取得準備
 		NicoLiveManager.I.readyConnect(userSession, lv);
-		// 竭｡繧ｳ繝｡繝ｳ繝亥叙蠕鈴幕蟋�
+		// 2.コメント取得開始
 		NicoLiveManager.I.startConnect();
 		while (true) {
 			// System.out.println(NicoLiveManager.INST.getChat());
-			// 竭｢繧ｳ繝｡繝ｳ繝亥叙蠕�
+			// 3.コメント取得
 			NicoLiveManager.ChatAbsolute chatAbsolute = NicoLiveManager.I.getChatAbsolute();
 			System.out.println(chatAbsolute);
+			
+			//コメント処理
+			String command = readComment(chatAbsolute.content);
+			
+			//送信用の命令系(出力は整数)
+			System.out.println(returnProcNum(command));
+
 			try {
 				Thread.sleep(1000);
 			} catch (InterruptedException e) {
@@ -120,8 +127,61 @@ public enum NicoLiveManager {
 		}
 	}
 
+	public static String readComment(String str){
+		char[] charArray = str.toCharArray();
+	
+		String val = "";//結果出力用変数
+		for (char ch : charArray) {//先頭の文字から一つずつ取ってくる
+			System.out.println(ch);
+			if (ch == '左' || ch == '右') {
+				if (val.length() == 0) {
+					val += ch;
+				}else {
+					val = "";
+				}
+			}
+			
+			if (ch == '上' || ch == '下') {
+				if (val.length() == 1) {
+					val += ch;
+					return val;
+				}else {
+					val = "";
+				}
+			}
+			
+		}
+		
+		return "";
+	}
+	
+	public enum Proc{
+		NO_ACTION,
+		TOP_LEFT,
+		BUTTOM_LEFT,
+		TOP_RIGHT,
+		BUTTOM_RIGHT,
+	}
+	
+	public static int returnProcNum(String str){
+		switch (str) {
+		case "":
+			return 0;		
+		case "左上":
+			return 1;
+		case "左下":
+			return 2;
+		case "右上":
+			return 3;
+		case "右下":
+			return 4;
+		default:
+			return 0;//命令操作なし
+		}
+	}
+
 	/*
-	 * 繝｡繝�繧ｻ繝ｼ繧ｸ繧ｵ繝ｼ繝舌↓謗･邯壹☆繧九◆繧√↓蠢�隕√↑諠�蝣ｱ縺ｪ縺ｩ
+	 * メッセージサーバに接続するために必要な情報など
 	 */
 	private String user_id;
 	private String nickname;
@@ -133,7 +193,7 @@ public enum NicoLiveManager {
 	private PrintWriter printWriter;
 
 	/*
-	 * 繝槭う繝壹�ｼ繧ｸ縺ｮ諠�蝣ｱ
+	 * マイページの情報
 	 */
 	private String profURL;
 	private String profImageMiniURL;
@@ -141,14 +201,14 @@ public enum NicoLiveManager {
 	private String userName;
 
 	/**
-	 * 繝ｦ繝ｼ繧ｶ繝ｼ繧ｻ繝�繧ｷ繝ｧ繝ｳID縺ｨ逡ｪ邨ИD繧剃ｽｿ縺｣縺ｦ繧ｳ繝｡繝ｳ繝医し繝ｼ繝舌↓謗･邯壹☆繧九◆繧√�ｮ貅門ｙ繧偵☆繧�
+	 * ユーザーセッションIDと番組IDを使ってコメントサーバに接続するための準備をする
 	 * 
 	 * @param cookieUserSession
 	 * @param broadCastID
 	 * @return
 	 */
 	public boolean readyConnect(String cookieUserSession, String broadCastID) {
-		// 逡ｪ邨ИD繧定ｧ｣譫�
+		// 番組IDを解析
 		String parseBroadCastID = null;
 		for (String s : broadCastID.split("[/?]"))
 			if (s.startsWith("lv"))
@@ -218,7 +278,7 @@ public enum NicoLiveManager {
 	}
 
 	/*
-	 * 荳ｻ縺ｮ諠�蝣ｱ蜿門ｾ礼ｳｻ
+	 * 主の情報取得系
 	 */
 	public String getUserID() {
 		return this.user_id;
@@ -229,7 +289,7 @@ public enum NicoLiveManager {
 	}
 
 	/**
-	 * 謗･邯壹ｒ髢句ｧ�
+	 * 接続を開始
 	 * 
 	 * @return
 	 */
@@ -259,7 +319,7 @@ public enum NicoLiveManager {
 	}
 
 	/**
-	 * 謗･邯壹ｒ邨ゆｺ�
+	 * 接続を終了
 	 */
 	public void endConnect() {
 		if (this.printWriter != null)
@@ -279,7 +339,7 @@ public enum NicoLiveManager {
 	}
 
 	/**
-	 * 蜿門ｾ励＠縺溘メ繝｣繝�繝域枚蟄怜�励ｒ�ｼ代▽謚ｽ蜃ｺ
+	 * 取得したチャット文字列を１つ抽出
 	 * 
 	 * @return
 	 */
@@ -302,7 +362,7 @@ public enum NicoLiveManager {
 	}
 
 	/**
-	 * 繝√Ε繝�繝域枚蟄怜�励°繧牙ｱ樊�ｧ蛟､繧偵�励Ο繝代ユ繧｣縺ｫ謖√▽繝√Ε繝�繝医け繝ｩ繧ｹ縺ｫ螟画鋤
+	 * チャット文字列から属性値をプロパティに持つチャットクラスに変換
 	 * 
 	 * @return
 	 */
@@ -312,7 +372,7 @@ public enum NicoLiveManager {
 	}
 
 	/**
-	 * 繝√Ε繝�繝医ｒ繧ｯ繝ｩ繧ｹ蛹�
+	 * チャットをクラス化
 	 */
 	static class ChatAbsolute {
 		static long offsetTime;
@@ -377,12 +437,12 @@ public enum NicoLiveManager {
 	}
 
 	/**************************************
-	 * 縺翫∪縺�
+	 * おまけ
 	 **************************************/
 	private String getAbsoluteValue(String absolute) {
 		String[] absoluteValue = absolute.split("[=|\"]+");
 		if (absoluteValue.length != 2) {
-			System.out.println(absolute + "縺ｯ豁｣縺励￥螻樊�ｧ蛟､繧貞叙蠕励☆繧九％縺ｨ縺後〒縺阪∪縺帙ｓ");
+			System.out.println(absolute + "は正しく属性値を取得することができません");
 			return null;
 		}
 		return absoluteValue[1];
@@ -438,11 +498,11 @@ public enum NicoLiveManager {
 	}
 
 	public void printMyPageInfo() {
-		System.out.println("繝槭う繝壹�ｼ繧ｸ蜿門ｾ�");
+		System.out.println("マイページ取得");
 		System.out.println("ID: " + this.userID);
-		System.out.println("蜷榊燕: " + this.userName);
-		System.out.println("繝励Ο繝慕判蜒酋RL: " + this.profURL);
-		System.out.println("繝励Ο繝慕判蜒上Μ繧ｵ繧､繧ｺURL: " + this.profImageMiniURL);
+		System.out.println("名前: " + this.userName);
+		System.out.println("プロフ画像URL: " + this.profURL);
+		System.out.println("プロフ画像リサイズURL: " + this.profImageMiniURL);
 	}
 
 }
