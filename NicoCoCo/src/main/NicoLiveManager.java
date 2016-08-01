@@ -25,6 +25,13 @@ import javax.xml.stream.events.XMLEvent;
 public enum NicoLiveManager {
 	I;
 	
+	public static int MAX_NUM = 1;
+	public static int LEFT_UP_COUNT = 0;
+	public static int LEFT_DOWN_COUNT = 0;
+	public static int RIGHT_UP_COUNT = 0;
+	public static int RIGHT_DOWN_COUNT = 0;
+	
+	
 	private final static String LOGINPAGE_URL = "https://secure.nicovideo.jp/secure/login?site=niconico";
 	public static String login(String mail, String password)
    {
@@ -98,6 +105,18 @@ public enum NicoLiveManager {
 		String pass = JOptionPane.showInputDialog("password");
 		String lv = JOptionPane.showInputDialog("放送URL");
 		
+		while(true){
+			try{
+				MAX_NUM = Integer.parseInt(JOptionPane.showInputDialog("コメント最大値"));
+				if(MAX_NUM < 1){
+					MAX_NUM = 1;
+				}
+				break;
+			}catch(NumberFormatException e){
+				JOptionPane.showMessageDialog(null, "もういっかい");
+			}
+		}
+		
 		String userSession = login(mail, pass);
 		
 		// 指定したクッキーからマイページの情報を取得
@@ -116,8 +135,11 @@ public enum NicoLiveManager {
 			//コメント処理
 			String command = readComment(chatAbsolute.content);
 			
+			//命令数字
+			int i = returnProcNum(command).ordinal();
+			
 			//送信用の命令系(出力は整数)
-			System.out.println(returnProcNum(command));
+			System.out.println(i);
 
 			try {
 				Thread.sleep(1000);
@@ -163,20 +185,40 @@ public enum NicoLiveManager {
 		BUTTOM_RIGHT,
 	}
 	
-	public static int returnProcNum(String str){
+	public static Proc returnProcNum(String str){
 		switch (str) {
 		case "":
-			return 0;		
+			return Proc.NO_ACTION;		
 		case "左上":
-			return 1;
+			LEFT_UP_COUNT++;
+			if(LEFT_UP_COUNT == MAX_NUM){
+				LEFT_UP_COUNT = 0;
+				return Proc.TOP_LEFT;
+			}
+			return Proc.NO_ACTION;
 		case "左下":
-			return 2;
+			LEFT_DOWN_COUNT++;
+			if(LEFT_DOWN_COUNT == MAX_NUM){
+				LEFT_DOWN_COUNT = 0;
+				return Proc.BUTTOM_LEFT;
+			}
+			return Proc.NO_ACTION;
 		case "右上":
-			return 3;
+			RIGHT_UP_COUNT++;
+			if(RIGHT_UP_COUNT == MAX_NUM){
+				RIGHT_UP_COUNT = 0;
+				return Proc.TOP_RIGHT;
+			}
+			return Proc.NO_ACTION;
 		case "右下":
-			return 4;
+			RIGHT_DOWN_COUNT++;
+			if(RIGHT_DOWN_COUNT == MAX_NUM){
+				RIGHT_DOWN_COUNT = 0;
+				return Proc.BUTTOM_RIGHT;
+			}
+			return Proc.NO_ACTION;
 		default:
-			return 0;//命令操作なし
+			return Proc.NO_ACTION;//命令操作なし
 		}
 	}
 
