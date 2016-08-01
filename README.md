@@ -14,15 +14,10 @@ TO-DO List
 --------------------------------------------------------------------------------------------------------------------------------------
 [Amitatatatata必読]開発したコードをmerge完了させるまでのstep
 
-git add (./<ディレクトリ名>)
-↓
-git commit -m "(コメント)"
-↓
-git push -u origin master
-↓
-gitHub上でpull request
-↓
-(NoripyがチェックしてConfirm to merge.)
-↓
-git pull https://gitHub.com/Noripy/CommentAnalyzer
+- git add (./<ディレクトリ名>)
+- git commit -m "(コメント)"
+- git push -u origin master
+- gitHub上でpull request
+- (NoripyがチェックしてConfirm to merge.)
+- git pull https://gitHub.com/Noripy/CommentAnalyzer
 
