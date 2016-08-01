@@ -21,3 +21,9 @@ TO-DO List
 - (NoripyがチェックしてConfirm to merge.)
 - git pull https://gitHub.com/Noripy/CommentAnalyzer
 
+--------------------------------------------------------------------------------------------------------------------------------------
+その他使えるgitコマンド
+
+- git log → 最新順にコミットのコメントが表示される.⇒git rebaseで戻せる.
+- git config -l → git操作で用いるステータスの表示.
+- git remote set-url (gitHubアカウントページ) →remote.origin.urlを変更することができる.
