@@ -1,6 +1,7 @@
 package main;
 
 import java.io.BufferedReader;
+import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
@@ -21,6 +22,9 @@ import javax.xml.stream.XMLEventReader;
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.events.XMLEvent;
+
+import lejos.pc.comm.NXTCommLogListener;
+import lejos.pc.comm.NXTConnector;
 
 public enum NicoLiveManager {
 	I;
@@ -103,11 +107,13 @@ public enum NicoLiveManager {
 		
 		String mail = JOptionPane.showInputDialog("mail");
 		String pass = JOptionPane.showInputDialog("password");
+		
 		String lv = JOptionPane.showInputDialog("放送URL");
 		
 		while(true){
 			try{
 				MAX_NUM = Integer.parseInt(JOptionPane.showInputDialog("コメント最大値"));
+				
 				if(MAX_NUM < 1){
 					MAX_NUM = 1;
 				}
@@ -126,6 +132,36 @@ public enum NicoLiveManager {
 		NicoLiveManager.I.readyConnect(userSession, lv);
 		// 2.コメント取得開始
 		NicoLiveManager.I.startConnect();
+		
+		NXTConnector conn = new NXTConnector();
+		
+		conn.addLogListener(new NXTCommLogListener(){
+
+			public void logEvent(String message) {
+				System.out.println("BTSend Log.listener: "+message);
+				
+			}
+
+			public void logEvent(Throwable throwable) {
+				System.out.println("BTSend Log.listener - stack trace: ");
+				 throwable.printStackTrace();
+				
+			}
+			
+		} 
+		);
+		// Connect to any NXT over Bluetooth
+		boolean connected = conn.connectTo("btspp://");
+		
+		if (!connected) {
+			System.err.println("Failed to connect to any NXT");
+			System.exit(1);
+		}
+		
+		DataOutputStream dos = new DataOutputStream(conn.getOutputStream());
+		
+		System.out.println("接続完了");
+		
 		while (true) {
 			// System.out.println(NicoLiveManager.INST.getChat());
 			// 3.コメント取得
@@ -138,23 +174,41 @@ public enum NicoLiveManager {
 			//命令数字
 			int i = returnProcNum(command).ordinal();
 			
+			
+			
 			//送信用の命令系(出力は整数)
 			System.out.println(i);
-
+			
+			try {
+				System.out.println("Sending " + i);
+				dos.writeInt(i);
+				dos.flush();			
+				
+			} catch (IOException ioe) {
+				System.out.println("IO Exception writing bytes:");
+				System.out.println(ioe.getMessage());
+			}	
+			
+			/*
 			try {
 				Thread.sleep(1000);
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}
+			*/
 		}
+		
+		
 	}
+	
+
 
 	public static String readComment(String str){
 		char[] charArray = str.toCharArray();
 	
 		String val = "";//結果出力用変数
 		for (char ch : charArray) {//先頭の文字から一つずつ取ってくる
-			System.out.println(ch);
+			//System.out.println(ch);
 			if (ch == '左' || ch == '右') {
 				if (val.length() == 0) {
 					val += ch;
