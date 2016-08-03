@@ -106,8 +106,11 @@ public enum NicoLiveManager{
 	public static void main(String[] args) {
 		//ニコニコ動画にログインした状態でCookieからuser_sessionをとってくる
 		
-		String mail = JOptionPane.showInputDialog("mail");
-		String pass = JOptionPane.showInputDialog("password");
+//		String mail = JOptionPane.showInputDialog("mail");
+//		String pass = JOptionPane.showInputDialog("password");
+		
+		String mail = "studybox.sharingtools@gmail.com";
+		String pass = "nikoniko";
 		String lv = JOptionPane.showInputDialog("放送URL");
 		
 		while(true){
@@ -170,13 +173,15 @@ public enum NicoLiveManager{
 			// System.out.println(NicoLiveManager.INST.getChat());
 			// 3.コメント取得
 			NicoLiveManager.ChatAbsolute chatAbsolute = NicoLiveManager.I.getChatAbsolute();
-			System.out.println(chatAbsolute.content);
+//			System.out.println(chatAbsolute.content);
 			
 			//コメント処理
-			String command = readComment(chatAbsolute.content);
-			
+			String commandKernel = readCommentKernel(chatAbsolute.content);
+			System.out.println(commandKernel);
+			String command = readComment(commandKernel);
+			System.out.println(command);
 			//命令数字
-			int i = returnProcNum(command).ordinal();
+			int i = returnProcNum(command);
 			
 			//送信用の命令系(出力は整数)
 			System.out.println(i);
@@ -229,39 +234,70 @@ public enum NicoLiveManager{
 		System.exit(0);
 	}
 
-	public static String readComment(String str){
+	public static String readCommentKernel(String str){
 		char[] charArray = str.toCharArray();
 	
 		String val = "";//結果出力用変数
 		for (char ch : charArray) {//先頭の文字から一つずつ取ってくる
 			
-//			//送る信号と同じ整数も受け付ける
-//			if(ch == '1' || ch == '１' || ch == '2' || ch == '２' || ch == '3' || ch == '３' || ch == '4' || ch == '４'){
+			//送る信号と同じ整数も受け付ける // ifseetnoの文字列は受け付けない
+//			if(!str.matches(".*" + "/hb ifseetno" + ".*") && (ch == '1' || 
+//					ch == '１' || ch == '2' || ch == '２' || ch == '3' || ch == '３' || ch == '4' || ch == '４')){
 //				val = convertInttoOrder(ch);
 //				return val;
 //			}
+
 //			System.out.println(ch); //1文字ずつとれてるかチェック
+			if(val.length() == 2){//(右上||右下||左上||左下)+(1~9 or 以外の文字)にする.
+				if( (ch == '1' || ch == '１' || ch == '2' || ch == '２' || ch == '3' || ch == '３' || ch == '4' ||
+				ch == '４' || ch == '5' || ch == '５' || ch == '6' || ch == '６' || ch == '7' ||
+						ch == '７' || ch == '8' || ch == '８' || ch == '9' || ch == '９') ){
+					val += ch;
+					return val;
+				}else{
+					val = "";
+				}
+			}
+			
 			if (ch == '左' || ch == '右') {
 				if (val.length() == 0) {
 					val += ch;
 				}else {
 					val = "";
+					val += ch;
 				}
 			}
 			
 			if (ch == '上' || ch == '下') {
 				if (val.length() == 1) {
 					val += ch;
-					return val;
 				}else {
 					val = "";
 				}
 			}
 			
+			
 		}
 		
 		return "";
 	}
+	
+	public static String readComment(String str){
+		char[] ch = str.toCharArray();
+//		if( (ch[2] == '1' || ch[2] == '１' || ch[2] == '2' || ch[2] == '２' || ch[2] == '3' || ch[2] == '３' || ch[2] == '4' ||
+//				ch[2] == '４' || ch[2] == '5' || ch[2] == '５' || ch[2] == '6' || ch[2] == '６' || ch[2] == '7' ||
+//						ch[2] == '７' || ch[2] == '8' || ch[2] == '８' || ch[2] == '9' || ch[2] == '９') ){
+			int index = Character.getNumericValue(ch[2]);
+//			ch[2] = (char)index;
+			String mes = "";
+			mes += ch[0];
+			mes += ch[1];
+			mes += index;
+			
+			return mes;
+//		}
+	}
+	
 	
 	public static String convertInttoOrder(char c){
 		switch (c) {
@@ -288,48 +324,273 @@ public enum NicoLiveManager{
 	
 	public enum Proc{
 		NO_ACTION,//0
-		TOP_LEFT,//1
-		BUTTOM_LEFT,//2
-		TOP_RIGHT,//3
-		BUTTOM_RIGHT,//4
-		STOP_MACHINE,//5
-		RESTART_MACHINE//6
+		STOP_MACHINE,//1
+		RESTART_MACHINE,//2
+		
+		TOP_LEFT,//3
+		BUTTOM_LEFT,//4
+		TOP_RIGHT,//5
+		BUTTOM_RIGHT//6
 	}
 	
-	public static Proc returnProcNum(String str){
+	public static int returnProcNum(String str){
 		switch (str) {
 		case "":
-			return Proc.NO_ACTION;		
-		case "左上":
+			return Proc.NO_ACTION.ordinal();		
+		case "左上1":
 			LEFT_UP_COUNT++;
 			if(LEFT_UP_COUNT == MAX_NUM){
 				LEFT_UP_COUNT = 0;
-				return Proc.TOP_LEFT;
+				return Proc.TOP_LEFT.ordinal() + 8;//return 3 + 8
 			}
-			return Proc.NO_ACTION;
-		case "左下":
+			return Proc.NO_ACTION.ordinal();
+		case "左上2":
+			LEFT_UP_COUNT++;
+			if(LEFT_UP_COUNT == MAX_NUM){
+				LEFT_UP_COUNT = 0;
+				return Proc.TOP_LEFT.ordinal() + 9;//return 3 + 9
+			}
+			return Proc.NO_ACTION.ordinal();
+		case "左上3":
+			LEFT_UP_COUNT++;
+			if(LEFT_UP_COUNT == MAX_NUM){
+				LEFT_UP_COUNT = 0;
+				return Proc.TOP_LEFT.ordinal() + 10;//return 3 + 10
+			}
+			return Proc.NO_ACTION.ordinal();
+		case "左上4":
+			LEFT_UP_COUNT++;
+			if(LEFT_UP_COUNT == MAX_NUM){
+				LEFT_UP_COUNT = 0;
+				return Proc.TOP_LEFT.ordinal() + 11;//return 3 + 11
+			}
+			return Proc.NO_ACTION.ordinal();
+		case "左上5":
+			LEFT_UP_COUNT++;
+			if(LEFT_UP_COUNT == MAX_NUM){
+				LEFT_UP_COUNT = 0;
+				return Proc.TOP_LEFT.ordinal() + 12;//return 3 + 12
+			}
+			return Proc.NO_ACTION.ordinal();
+		case "左上6":
+			LEFT_UP_COUNT++;
+			if(LEFT_UP_COUNT == MAX_NUM){
+				LEFT_UP_COUNT = 0;
+				return Proc.TOP_LEFT.ordinal() + 13;//return 3 + 13
+			}
+			return Proc.NO_ACTION.ordinal();
+		case "左上7":
+			LEFT_UP_COUNT++;
+			if(LEFT_UP_COUNT == MAX_NUM){
+				LEFT_UP_COUNT = 0;
+				return Proc.TOP_LEFT.ordinal() + 14;//return 3 + 14
+			}
+			return Proc.NO_ACTION.ordinal();
+		case "左上8":
+			LEFT_UP_COUNT++;
+			if(LEFT_UP_COUNT == MAX_NUM){
+				LEFT_UP_COUNT = 0;
+				return Proc.TOP_LEFT.ordinal() + 15;//return 3 + 15
+			}
+			return Proc.NO_ACTION.ordinal();
+		case "左上9":
+			LEFT_UP_COUNT++;
+			if(LEFT_UP_COUNT == MAX_NUM){
+				LEFT_UP_COUNT = 0;
+				return Proc.TOP_LEFT.ordinal() + 16;//return 3 + 16
+			}
+			return Proc.NO_ACTION.ordinal();
+		case "左下1":
 			LEFT_DOWN_COUNT++;
 			if(LEFT_DOWN_COUNT == MAX_NUM){
 				LEFT_DOWN_COUNT = 0;
-				return Proc.BUTTOM_LEFT;
+				return Proc.BUTTOM_LEFT.ordinal() + 17;//return 4 + 17
 			}
-			return Proc.NO_ACTION;
-		case "右上":
+			return Proc.NO_ACTION.ordinal();
+		case "左下2":
+			LEFT_DOWN_COUNT++;
+			if(LEFT_DOWN_COUNT == MAX_NUM){
+				LEFT_DOWN_COUNT = 0;
+				return Proc.BUTTOM_LEFT.ordinal() + 18;//return 4 + 18
+			}
+			return Proc.NO_ACTION.ordinal();
+		case "左下3":
+			LEFT_DOWN_COUNT++;
+			if(LEFT_DOWN_COUNT == MAX_NUM){
+				LEFT_DOWN_COUNT = 0;
+				return Proc.BUTTOM_LEFT.ordinal() + 19;//return 4 + 19
+			}
+			return Proc.NO_ACTION.ordinal();
+		case "左下4":
+			LEFT_DOWN_COUNT++;
+			if(LEFT_DOWN_COUNT == MAX_NUM){
+				LEFT_DOWN_COUNT = 0;
+				return Proc.BUTTOM_LEFT.ordinal() + 20;//retunr 4 + 20
+			}
+			return Proc.NO_ACTION.ordinal();
+		case "左下5":
+			LEFT_DOWN_COUNT++;
+			if(LEFT_DOWN_COUNT == MAX_NUM){
+				LEFT_DOWN_COUNT = 0;
+				return Proc.BUTTOM_LEFT.ordinal() + 21;//return 4 + 21
+			}
+			return Proc.NO_ACTION.ordinal();
+		case "左下6":
+			LEFT_DOWN_COUNT++;
+			if(LEFT_DOWN_COUNT == MAX_NUM){
+				LEFT_DOWN_COUNT = 0;
+				return Proc.BUTTOM_LEFT.ordinal() + 22;//return 4 + 22
+			}
+			return Proc.NO_ACTION.ordinal();
+		case "左下7":
+			LEFT_DOWN_COUNT++;
+			if(LEFT_DOWN_COUNT == MAX_NUM){
+				LEFT_DOWN_COUNT = 0;
+				return Proc.BUTTOM_LEFT.ordinal() + 23;//return 4 + 23
+			}
+			return Proc.NO_ACTION.ordinal();
+		case "左下8":
+			LEFT_DOWN_COUNT++;
+			if(LEFT_DOWN_COUNT == MAX_NUM){
+				LEFT_DOWN_COUNT = 0;
+				return Proc.BUTTOM_LEFT.ordinal() + 24;//return 4 + 24
+			}
+			return Proc.NO_ACTION.ordinal();
+		case "左下9":
+			LEFT_DOWN_COUNT++;
+			if(LEFT_DOWN_COUNT == MAX_NUM){
+				LEFT_DOWN_COUNT = 0;
+				return Proc.BUTTOM_LEFT.ordinal() + 25;//return 4 + 25
+			}
+			return Proc.NO_ACTION.ordinal();
+		case "右上1":
 			RIGHT_UP_COUNT++;
 			if(RIGHT_UP_COUNT == MAX_NUM){
 				RIGHT_UP_COUNT = 0;
-				return Proc.TOP_RIGHT;
+				return Proc.TOP_RIGHT.ordinal() + 26;//return 5 + 26
 			}
-			return Proc.NO_ACTION;
-		case "右下":
+			return Proc.NO_ACTION.ordinal();
+		case "右上2":
+			RIGHT_UP_COUNT++;
+			if(RIGHT_UP_COUNT == MAX_NUM){
+				RIGHT_UP_COUNT = 0;
+				return Proc.TOP_RIGHT.ordinal() + 27;//return 5 + 27
+			}
+			return Proc.NO_ACTION.ordinal();
+		case "右上3":
+			RIGHT_UP_COUNT++;
+			if(RIGHT_UP_COUNT == MAX_NUM){
+				RIGHT_UP_COUNT = 0;
+				return Proc.TOP_RIGHT.ordinal() + 28;//return 5 + 28
+			}
+			return Proc.NO_ACTION.ordinal();
+		case "右上4":
+			RIGHT_UP_COUNT++;
+			if(RIGHT_UP_COUNT == MAX_NUM){
+				RIGHT_UP_COUNT = 0;
+				return Proc.TOP_RIGHT.ordinal() + 29;//return 5 + 29
+			}
+			return Proc.NO_ACTION.ordinal();
+		case "右上5":
+			RIGHT_UP_COUNT++;
+			if(RIGHT_UP_COUNT == MAX_NUM){
+				RIGHT_UP_COUNT = 0;
+				return Proc.TOP_RIGHT.ordinal() + 30;//return 5 + 30
+			}
+			return Proc.NO_ACTION.ordinal();
+		case "右上6":
+			RIGHT_UP_COUNT++;
+			if(RIGHT_UP_COUNT == MAX_NUM){
+				RIGHT_UP_COUNT = 0;
+				return Proc.TOP_RIGHT.ordinal() + 31;//return 5 + 31
+			}
+			return Proc.NO_ACTION.ordinal();
+		case "右上7":
+			RIGHT_UP_COUNT++;
+			if(RIGHT_UP_COUNT == MAX_NUM){
+				RIGHT_UP_COUNT = 0;
+				return Proc.TOP_RIGHT.ordinal() + 32;//return 5 + 32
+			}
+			return Proc.NO_ACTION.ordinal();
+		case "右上8":
+			RIGHT_UP_COUNT++;
+			if(RIGHT_UP_COUNT == MAX_NUM){
+				RIGHT_UP_COUNT = 0;
+				return Proc.TOP_RIGHT.ordinal() + 33;//return 5 + 33
+			}
+			return Proc.NO_ACTION.ordinal();
+		case "右上9":
+			RIGHT_UP_COUNT++;
+			if(RIGHT_UP_COUNT == MAX_NUM){
+				RIGHT_UP_COUNT = 0;
+				return Proc.TOP_RIGHT.ordinal() + 34;//return 5 + 34
+			}
+			return Proc.NO_ACTION.ordinal();
+		case "右下1":
 			RIGHT_DOWN_COUNT++;
 			if(RIGHT_DOWN_COUNT == MAX_NUM){
 				RIGHT_DOWN_COUNT = 0;
-				return Proc.BUTTOM_RIGHT;
+				return Proc.BUTTOM_RIGHT.ordinal() + 35;//return 6 + 35
 			}
-			return Proc.NO_ACTION;
+			return Proc.NO_ACTION.ordinal();
+		case "右下2":
+			RIGHT_DOWN_COUNT++;
+			if(RIGHT_DOWN_COUNT == MAX_NUM){
+				RIGHT_DOWN_COUNT = 0;
+				return Proc.BUTTOM_RIGHT.ordinal() + 36;//return 6 + 36
+			}
+			return Proc.NO_ACTION.ordinal();
+		case "右下3":
+			RIGHT_DOWN_COUNT++;
+			if(RIGHT_DOWN_COUNT == MAX_NUM){
+				RIGHT_DOWN_COUNT = 0;
+				return Proc.BUTTOM_RIGHT.ordinal() + 37;//return 6 + 37
+			}
+			return Proc.NO_ACTION.ordinal();
+		case "右下4":
+			RIGHT_DOWN_COUNT++;
+			if(RIGHT_DOWN_COUNT == MAX_NUM){
+				RIGHT_DOWN_COUNT = 0;
+				return Proc.BUTTOM_RIGHT.ordinal() + 38;//return 6 + 38
+			}
+			return Proc.NO_ACTION.ordinal();
+		case "右下5":
+			RIGHT_DOWN_COUNT++;
+			if(RIGHT_DOWN_COUNT == MAX_NUM){
+				RIGHT_DOWN_COUNT = 0;
+				return Proc.BUTTOM_RIGHT.ordinal() + 39;//return 6 + 39
+			}
+			return Proc.NO_ACTION.ordinal();
+		case "右下6":
+			RIGHT_DOWN_COUNT++;
+			if(RIGHT_DOWN_COUNT == MAX_NUM){
+				RIGHT_DOWN_COUNT = 0;
+				return Proc.BUTTOM_RIGHT.ordinal() + 40;//return 6 + 40
+			}
+			return Proc.NO_ACTION.ordinal();
+		case "右下7":
+			RIGHT_DOWN_COUNT++;
+			if(RIGHT_DOWN_COUNT == MAX_NUM){
+				RIGHT_DOWN_COUNT = 0;
+				return Proc.BUTTOM_RIGHT.ordinal() + 41;//return 6 + 41
+			}
+			return Proc.NO_ACTION.ordinal();
+		case "右下8":
+			RIGHT_DOWN_COUNT++;
+			if(RIGHT_DOWN_COUNT == MAX_NUM){
+				RIGHT_DOWN_COUNT = 0;
+				return Proc.BUTTOM_RIGHT.ordinal() + 42;//return 6 + 42
+			}
+			return Proc.NO_ACTION.ordinal();
+		case "右下9":
+			RIGHT_DOWN_COUNT++;
+			if(RIGHT_DOWN_COUNT == MAX_NUM){
+				RIGHT_DOWN_COUNT = 0;
+				return Proc.BUTTOM_RIGHT.ordinal() + 43;//return 6 + 43
+			}
+			return Proc.NO_ACTION.ordinal();
 		default:
-			return Proc.NO_ACTION;//命令操作なし
+			return Proc.NO_ACTION.ordinal();//命令操作なし
 		}
 	}
 
