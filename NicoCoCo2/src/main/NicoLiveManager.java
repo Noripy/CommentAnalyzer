@@ -180,29 +180,33 @@ public enum NicoLiveManager{
 			
 			//送信用の命令系(出力は整数)
 			System.out.println(i);
-
+			
+			ke.checkFLAG();
+			
             try {
 //              System.out.println("Sending " + i);
-                dos.writeInt(i);
+            	if (controlMachine(ke.keyData) == 9) {
+                    dos.writeInt(Proc.STOP_MACHINE.ordinal() + 4);//5 + 4;//車では9でstop
+				}else{
+	                dos.writeInt(i);					
+				}
                 dos.flush();            
                 
             } catch (IOException ioe) {
                 System.out.println("IO Exception writing bytes:");
                 System.out.println(ioe.getMessage());
             }           
-
+/*
 			try {
-				Thread.sleep(1000);//default:1000
+				Thread.sleep(1000);
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}
-			
-			ke.checkFLAG();
+	*/		
 			if(ke.FLAG){//収束条件[qボタン押したら終了.]
 				try {
 		            dos.close();
-		            conn.close();
-		            
+		            conn.close();    
 		            System.out.println("System finished.");
 		            break;
 		        } catch (IOException ioe) {
@@ -274,11 +278,12 @@ public enum NicoLiveManager{
 	}
 	
 	public enum Proc{
-		NO_ACTION,
-		TOP_LEFT,
-		BUTTOM_LEFT,
-		TOP_RIGHT,
-		BUTTOM_RIGHT,
+		NO_ACTION,//0
+		TOP_LEFT,//1
+		BUTTOM_LEFT,//2
+		TOP_RIGHT,//3
+		BUTTOM_RIGHT,//4
+		STOP_MACHINE//5
 	}
 	
 	public static Proc returnProcNum(String str){
@@ -318,6 +323,16 @@ public enum NicoLiveManager{
 		}
 	}
 
+	public static int controlMachine(char key){
+		switch (key) {
+		case 'q': //'Quit'
+			return Proc.STOP_MACHINE.ordinal();
+
+		default:
+			return 0;
+		}
+		
+	}
 	/*
 	 * メッセージサーバに接続するために必要な情報など
 	 */
