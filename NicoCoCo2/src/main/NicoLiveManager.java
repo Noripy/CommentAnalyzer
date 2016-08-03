@@ -106,11 +106,9 @@ public enum NicoLiveManager{
 	public static void main(String[] args) {
 		//ニコニコ動画にログインした状態でCookieからuser_sessionをとってくる
 		
-//		String mail = JOptionPane.showInputDialog("mail");
-//		String pass = JOptionPane.showInputDialog("password");
+		String mail = JOptionPane.showInputDialog("mail");
+		String pass = JOptionPane.showInputDialog("password");
 		
-		String mail = "studybox.sharingtools@gmail.com";
-		String pass = "nikoniko";
 		String lv = JOptionPane.showInputDialog("放送URL");
 		
 		while(true){
