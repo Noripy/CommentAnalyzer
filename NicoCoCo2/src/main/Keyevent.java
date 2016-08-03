@@ -35,17 +35,19 @@ public class Keyevent {
 	}
 	
 	public void checkFLAG(){
-		if(this.keyData == 'q'){//収束条件[qボタン押したら終了.]
+		if(getKeyData() == 'q'){//収束条件[qボタン押したら終了.]
 			FLAG = true;
+		}else{
+			FLAG = false;		
+			
 		}
-		FLAG = false;		
 	}
 }
 
 class KeyboardInput implements KeyListener{
 
 	char key;
-	@Override
+@Override
 	public void keyPressed(KeyEvent e) {
 		// TODO Auto-generated method stub
 		
@@ -62,7 +64,7 @@ class KeyboardInput implements KeyListener{
 		// TODO Auto-generated method stub
 		char key = e.getKeyChar();
 		setKey(key);
-		System.out.println(key);
+		//System.out.println(key);
 		
 		
 	}

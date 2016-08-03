@@ -1,8 +1,5 @@
 package main;
 
-import java.awt.TextField;
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
 import java.io.IOException;
@@ -164,7 +161,10 @@ public enum NicoLiveManager{
 		// 2.コメント取得開始
 		NicoLiveManager.I.startConnect();
 		
-		Keyevent ke = new Keyevent();
+		//Keyevent ke = new Keyevent();
+		
+		Thread thread = new Thread(new TestThread(dos, conn));
+		thread.start();
 		
 		while (true) {
 			// System.out.println(NicoLiveManager.INST.getChat());
@@ -181,15 +181,18 @@ public enum NicoLiveManager{
 			//送信用の命令系(出力は整数)
 			System.out.println(i);
 			
-			ke.checkFLAG();
+			//ke.checkFLAG();
 			
             try {
 //              System.out.println("Sending " + i);
-            	if (controlMachine(ke.keyData) == 9) {
-                    dos.writeInt(Proc.STOP_MACHINE.ordinal() + 4);//5 + 4;//車では9でstop
-				}else{
-	                dos.writeInt(i);					
-				}
+//            	System.out.println(ke.keyData);
+//            	if (controlMachine(ke.keyData) == Proc.STOP_MACHINE.ordinal()) {
+//            		System.out.println("stop");
+//                    dos.writeInt(Proc.STOP_MACHINE.ordinal() + 4);//5 + 4;//車では9でstop
+//				}else{
+//	                dos.writeInt(i);					
+//				}
+            	dos.writeInt(i);
                 dos.flush();            
                 
             } catch (IOException ioe) {
@@ -203,21 +206,27 @@ public enum NicoLiveManager{
 				e.printStackTrace();
 			}
 	*/		
-			if(ke.FLAG){//収束条件[qボタン押したら終了.]
-				try {
-		            dos.close();
-		            conn.close();    
-		            System.out.println("System finished.");
-		            break;
-		        } catch (IOException ioe) {
-		            System.out.println("IOException closing connection:");
-		            System.out.println(ioe.getMessage());
-		            break;
-		        }
-			}
+//			if(ke.FLAG){//収束条件[qボタン押したら終了.]
+//				try {
+//		            dos.close();
+//		            conn.close();    
+//		            System.out.println("System finished.");
+//		            break;
+//		        } catch (IOException ioe) {
+//		            System.out.println("IOException closing connection:");
+//		            System.out.println(ioe.getMessage());
+//		            break;
+//		        }
+//			}
 		}
 		
 		
+		
+		
+	}
+	
+	public static void ExitTool(){
+		System.exit(0);
 	}
 
 	public static String readComment(String str){
@@ -226,11 +235,11 @@ public enum NicoLiveManager{
 		String val = "";//結果出力用変数
 		for (char ch : charArray) {//先頭の文字から一つずつ取ってくる
 			
-			//送る信号と同じ整数も受け付ける
-			if(ch == '1' || ch == '１' || ch == '2' || ch == '２' || ch == '3' || ch == '３' || ch == '4' || ch == '４'){
-				val = convertInttoOrder(ch);
-				return val;
-			}
+//			//送る信号と同じ整数も受け付ける
+//			if(ch == '1' || ch == '１' || ch == '2' || ch == '２' || ch == '3' || ch == '３' || ch == '4' || ch == '４'){
+//				val = convertInttoOrder(ch);
+//				return val;
+//			}
 //			System.out.println(ch); //1文字ずつとれてるかチェック
 			if (ch == '左' || ch == '右') {
 				if (val.length() == 0) {
