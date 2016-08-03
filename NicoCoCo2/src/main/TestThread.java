@@ -26,6 +26,8 @@ public class TestThread implements Runnable{
 			try {
 				
 				if (NicoLiveManager.controlMachine(ke.keyData) == Proc.STOP_MACHINE.ordinal()) {
+					ke.keyData = ' ';
+					ke.ki.key = ' ';
             		System.out.println("stop");
                     dos.writeInt(Proc.STOP_MACHINE.ordinal() + 4);//5 + 4;//車では9でstop
                     dos.flush(); 
@@ -33,7 +35,9 @@ public class TestThread implements Runnable{
                     break;
                     
 				}else if(NicoLiveManager.controlMachine(ke.keyData) == Proc.RESTART_MACHINE.ordinal()){
-            		System.out.println("restart");
+            		ke.keyData = ' ';
+            		ke.ki.key = ' ';
+					System.out.println("restart");
                     dos.writeInt(Proc.RESTART_MACHINE.ordinal() + 2);//6 + 2;//車では8でrestart
                     dos.flush(); 
 				}

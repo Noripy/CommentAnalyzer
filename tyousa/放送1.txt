@@ -1,0 +1,29 @@
+omsg102.live.nicovideo.jp
+2826
+1536499714
+1F中央　後方
+
+omsg101.live.nicovideo.jp
+2813
+1536499713
+1F中央　前方
+
+omsg106.live.nicovideo.jp
+2877
+1536499712
+1F中央 最前列
+
+omsg105.live.nicovideo.jp
+2864
+1536499711
+裏アリーナ
+
+omsg104.live.nicovideo.jp
+2851
+1536499710
+アリーナ
+
+osmg103.live.nicovideo.jp
+2838
+1536499709
+アリーナ最前列
