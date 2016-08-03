@@ -108,9 +108,8 @@ public enum NicoLiveManager {
 //		String mail = JOptionPane.showInputDialog("mail");
 //		String pass = JOptionPane.showInputDialog("password");
 		
-		String mail = "tarachantakutaku@yahoo.co.jp";
-		String pass = "262421262421";
-		
+		String mail = "(Write your mail address)";
+		String pass = "(Write your password)";
 		
 		String lv = "lv269675864";
 		
