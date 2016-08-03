@@ -292,7 +292,8 @@ public enum NicoLiveManager{
 		BUTTOM_LEFT,//2
 		TOP_RIGHT,//3
 		BUTTOM_RIGHT,//4
-		STOP_MACHINE//5
+		STOP_MACHINE,//5
+		RESTART_MACHINE//6
 	}
 	
 	public static Proc returnProcNum(String str){
@@ -336,7 +337,8 @@ public enum NicoLiveManager{
 		switch (key) {
 		case 'q': //'Quit'
 			return Proc.STOP_MACHINE.ordinal();
-
+		case 'r': // 'Restart'
+			return Proc.RESTART_MACHINE.ordinal();
 		default:
 			return 0;
 		}

@@ -24,12 +24,18 @@ public class TestThread implements Runnable{
 		while(true){
 			ke.checkFLAG();
 			try {
+				
 				if (NicoLiveManager.controlMachine(ke.keyData) == Proc.STOP_MACHINE.ordinal()) {
             		System.out.println("stop");
                     dos.writeInt(Proc.STOP_MACHINE.ordinal() + 4);//5 + 4;//車では9でstop
                     dos.flush(); 
                     NicoLiveManager.ExitTool();
                     break;
+                    
+				}else if(NicoLiveManager.controlMachine(ke.keyData) == Proc.RESTART_MACHINE.ordinal()){
+            		System.out.println("restart");
+                    dos.writeInt(Proc.RESTART_MACHINE.ordinal() + 2);//6 + 2;//車では8でrestart
+                    dos.flush(); 
 				}
                             
                 
