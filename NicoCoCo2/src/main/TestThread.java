@@ -29,7 +29,7 @@ public class TestThread implements Runnable{
 					ke.keyData = ' ';
 					ke.ki.key = ' ';
             		System.out.println("stop");
-                    dos.writeInt(Proc.STOP_MACHINE.ordinal() + 4);//5 + 4;//車では9でstop
+                    dos.writeInt(Proc.STOP_MACHINE.ordinal());//車をstop
                     dos.flush(); 
                     NicoLiveManager.ExitTool();
                     break;
@@ -38,7 +38,8 @@ public class TestThread implements Runnable{
             		ke.keyData = ' ';
             		ke.ki.key = ' ';
 					System.out.println("restart");
-                    dos.writeInt(Proc.RESTART_MACHINE.ordinal() + 2);//6 + 2;//車では8でrestart
+					System.out.println(Proc.RESTART_MACHINE.ordinal());
+                    dos.writeInt(Proc.RESTART_MACHINE.ordinal());//車をrestart
                     dos.flush(); 
 				}
                             
