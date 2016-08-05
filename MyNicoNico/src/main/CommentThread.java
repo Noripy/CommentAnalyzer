@@ -38,7 +38,7 @@ public class CommentThread extends Thread{
 	@Override
 	public void run(){
 		
-		startConnect(waku);
+		if(!startConnect(waku)) return;
 		
 		while(true){
 			if(endSW) break;
@@ -102,7 +102,7 @@ public class CommentThread extends Thread{
 	private BufferedReader bufferedReader;
 	private PrintWriter printWriter;
 	
-	public void startConnect(WakuInformation waku) {
+	public boolean startConnect(WakuInformation waku) {
 		this.socket = new Socket();
 		try{
 			this.socket.connect(new InetSocketAddress(waku.addr, Integer.parseInt(waku.port)));
@@ -119,8 +119,9 @@ public class CommentThread extends Thread{
 					break;
 				sb.append((char) c);
 			}
+			return true;
 		}catch(Exception e){
-			
+			return false;
 		}
 	}
 	

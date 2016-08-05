@@ -1,5 +1,9 @@
 package main;
 
+import java.util.ArrayList;
+
+import javax.swing.JOptionPane;
+
 import lejos.pc.comm.NXTConnector;
 
 public class Main {
@@ -8,13 +12,22 @@ public class Main {
 	
 	public static void main(String[] args){
 		
-		String addr = "omsg101.live.nicovideo.jp";
-		String port = "2812";
-		String thread = "1539190246";
-		WakuInformation waku = new WakuInformation();
-		waku.addr = addr;
-		waku.port = port;
-		waku.thread = thread;
+		
+		
+		ArrayList<WakuInformation> wakus = new ArrayList<WakuInformation>();
+		
+		while(true){
+			String addr = JOptionPane.showInputDialog("アドレス");
+			if(addr.equals(""))break;
+			String port = JOptionPane.showInputDialog("ポート");
+			if(port.equals(""))break;
+			String thread = JOptionPane.showInputDialog("スレッド");
+			if(thread.equals(""))break;
+			wakus.add(new WakuInformation(addr, port, thread));
+			
+		}
+		
+		
 		
 		NXTConnector conn = new NXTConnector();
 		
@@ -28,9 +41,14 @@ public class Main {
 		
 		MainFrame frame = new MainFrame(conn);
 		Thread speedThread = new SpeedThread(frame);
-		Thread commentThread = new CommentThread(conn, waku);
+		
 		speedThread.start();
-		commentThread.start();
+		for(int i = 0; i < wakus.size(); i++){
+			new CommentThread(conn, wakus.get(i)).start();
+		}
+		
+		
+		
 		
 	}
 	
