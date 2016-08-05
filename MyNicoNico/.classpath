@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.8"/>
+	<classpathentry kind="lib" path="C:/Users/Ami/Desktop/bcel.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Ami/Desktop/bluecove.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Ami/Desktop/bluecove-gpl.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Ami/Desktop/commons-cli.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Ami/Desktop/jcommon.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Ami/Desktop/jfreechart.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Ami/Desktop/pccomm.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Ami/Desktop/stax-api-1.0.1.jar"/>
+	<classpathentry kind="output" path="bin"/>
+</classpath>
